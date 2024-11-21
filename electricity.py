@@ -9,7 +9,6 @@ class electricity():
             csvFile = csv.reader(file)
             for lines in csvFile:
                 try:
-                    self.prices.append(float(lines[1]))
+                    self.prices.append(float(lines[1])+0.761)
                 except:
                     pass
-        self.prices.remove(self.prices[-1])
