@@ -1,9 +1,20 @@
+"""
+A python file containing the fridge class
+"""
 from electricity import electricity
 import math
+import doctest
+
 
 
 class fridge:
+    """
+    fridge class to hold and control a theoritical fridge
+    """
     def __init__(self, starting_temp: float):
+        """
+        Init the fridge class, requires a starting_temp
+        """
         self.temp: float = [starting_temp]
         self.C1 = 5*(10**-7)
         self.C2 = 3*(10**-5)
@@ -15,6 +26,11 @@ class fridge:
         self.time_over = 0
 
     def _should_cool(self, itteration: int, closed: bool = True, thermostat: str = "") -> bool:
+        """
+        Function using a switch case(Not fucking match case you little piece of shit using python terms), 
+        to determen if cooling is needed
+        Takes a string describing the thermostat to use, and a the itteration and state of the door
+        """
         match thermostat:
             case "Under3":
                 return self.thermostat_under_3(itteration-1)
@@ -24,11 +40,14 @@ class fridge:
                 return (self.temp[itteration] > 5)
 
     def _update_temp(self, itteration: int, closed: bool, thermostat: str = ""):
+        """
+        Uses the formula to update the fridge temp, calls _should_cool
+        """
         if self._should_cool(itteration - 1, closed, thermostat):
             if closed:
                 self.temp.append(self.temp[itteration - 1] + (self.C1 * (20 - self.temp[itteration - 1]) + self.CC2 * (-5 - self.temp[itteration - 1]))*300)
             else:
-                self.temp.append(self.temp[itteration - 1] + (self.C2 * (20 - self.temp[itteration - 1]) + self.CC2* (-5 - self.temp[itteration - 1]))*300)
+                self.temp.append(self.temp[itteration - 1] + (self.C2 * (20 - self.temp[itteration - 1]) + self.CC2 * (-5 - self.temp[itteration - 1]))*300)
             self._calculate_price(True, itteration)
         else:
             if closed:
@@ -38,6 +57,9 @@ class fridge:
             self._calculate_price(False, itteration)
 
     def _calculate_price(self, running: bool, itteration: int):
+        """
+        Calculates the price, electricity, and food loss
+        """
         if running:
             self.price += self.El.prices[itteration]*1  # electricity cost added
 
@@ -49,6 +71,9 @@ class fridge:
             self.time_over += 1
 
     def thermostat_under_3(self, itteration: int) -> bool:
+        """
+        Thermostat which cools if over 6.5, or if over 3.5, and electricity under 3
+        """
         if self.temp[itteration] >= 6.5:
             return True
         elif self.temp[itteration] > 3.5 and self.El.prices[itteration] < 3:
@@ -57,6 +82,13 @@ class fridge:
             return False
 
     def thermostat_under_3_expanded(self, itteration: int, closed: bool) -> bool:
+        """
+        Thermostat which cools if over 6.5, or if over 3.5, and electricity under 3.
+        And tries to minimize food loss
+
+        >>> 
+
+        """
         if self.temp[itteration] >= 6.2:
             return True
         elif self.temp[itteration] > 3.5 and self.El.prices[itteration] <2:
