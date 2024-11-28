@@ -10,13 +10,8 @@ def main():
     Run Main
     """
     ai_enhanced_mode = True
-    its = 10
+    its = 1000
     cost = 0
-
-
-
-
-
     el = Electricity()
 
     if ai_enhanced_mode:
@@ -25,7 +20,7 @@ def main():
         cost = run_normal(its, el)
         
 
-    print(cost/its)
+    print(cost)
     plot_data(el)
     
 
@@ -54,7 +49,7 @@ def run_ai(its: int, El: Electricity)-> float:
     >>> 11000 < run_normal(1,Electricity()) < 13000
     True
     """
-    cost = 0 
+    cost = 1000000
     for y in range(0, its):
         Fridge = fridge(5, El) 
         for x in range(1, len(El.prices)-1):
@@ -64,6 +59,7 @@ def run_ai(its: int, El: Electricity)-> float:
             Fridge._update_temp(x, closed, "Under3")
         cost += Fridge.price
     print("Algoritm has been AI enhanced")
+
     return cost
 
 
