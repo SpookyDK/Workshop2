@@ -4,7 +4,7 @@ A python file used to load and contain elpriser
 import csv
 
 
-class electricity():
+class Electricity():
     """
     A class used to load and contain elpriser
     """
@@ -20,4 +20,4 @@ class electricity():
                 try:
                     self.prices.append(float(lines[1]))
                 except:
-                    pass
+                    continue

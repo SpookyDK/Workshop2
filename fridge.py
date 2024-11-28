@@ -1,17 +1,17 @@
 """
 A python file containing the fridge class
 """
-from electricity import electricity
+from electricity import Electricity
 import math
 import doctest
-
+import random
 
 
 class fridge:
     """
     fridge class to hold and control a theoritical fridge
     """
-    def __init__(self, starting_temp: float):
+    def __init__(self, starting_temp: float, EL: Electricity):
         """
         Init the fridge class, requires a starting_temp
         """
@@ -20,7 +20,7 @@ class fridge:
         self.C2 = 3*(10**-5)
         self.CC1 = 0*(300**-1)
         self.CC2 = 8*(10**-6)
-        self.El = electricity()
+        self.El = EL
         self.price = 0
         self.time_under = 0 
         self.time_over = 0
@@ -30,12 +30,19 @@ class fridge:
         Function using a switch case(Not fucking match case you little piece of shit using python terms), 
         to determen if cooling is needed
         Takes a string describing the thermostat to use, and a the itteration and state of the door
+        >>> test_fridge._should_cool(1,False, "Under3Expanded")
+        False
+
+        >>> test_fridge._should_cool(1,False, "Under3")
+        False
         """
         match thermostat:
             case "Under3":
                 return self.thermostat_under_3(itteration-1)
             case "Under3Expanded":
                 return self.thermostat_under_3_expanded(itteration-1, closed)
+            case "thermostat_bogo":
+                return self.thermostat_bogo()
             case _:
                 return (self.temp[itteration] > 5)
 
@@ -76,7 +83,7 @@ class fridge:
         """
         if self.temp[itteration] >= 6.5:
             return True
-        elif self.temp[itteration] > 3.5 and self.El.prices[itteration] < 3:
+        elif self.temp[itteration] > 3.5 and self.El.prices[itteration] < 2.5:
             return True
         else:
             return False
@@ -85,17 +92,21 @@ class fridge:
         """
         Thermostat which cools if over 6.5, or if over 3.5, and electricity under 3.
         And tries to minimize food loss
-
-        >>> 
-
         """
         if self.temp[itteration] >= 6.2:
             return True
-        elif self.temp[itteration] > 3.5 and self.El.prices[itteration] <2:
+        elif self.temp[itteration] > 3.5 and self.El.prices[itteration] <1.3:
             return True
-        elif self.temp[itteration] > 5 and self.El.prices[itteration] < 3:
+        elif self.temp[itteration] > 5 and self.El.prices[itteration] < 2.8:
             return True
         elif self.temp[itteration] > 6.2 and not closed:
             return True
         else:
             return False
+
+    def thermostat_bogo(self) -> bool:
+        return random.randrange(0,1) == 1
+
+
+if __name__ == "__main__":
+    doctest.testmod(extraglobs={"test_fridge": fridge(5, Electricity())})
